@@ -5,7 +5,8 @@
 class elkstack::config (
   $es_config     = $::elkstack::es_config,
   $kibana_config = $::elkstack::kibana_config,
-  $logstash_config = $::elkstack::logstash_config,
+  $logstash_config_output = $::elkstack::logstash_config_output,
+  $logstash_config_input = $::elkstack::logstash_config_input,
 ){
   file {'kibana nginx config':
     ensure  => file,
@@ -36,17 +37,26 @@ class elkstack::config (
       notify => Service['elasticsearch'],
     }
   }
-  $logstash_config.each |$conf_file, $contents| {
-    file { "/etc/logstash/conf.d/${conf_file}":
-      ensure => present,
+  $logstash_config_input.each |$conf_file, $contents| {
+    file { "/etc/logstash/conf.d/${conf_file}-input.conf":
+      ensure  => present,
+      content => template('elkstack/logstash.input.conf.erb'),
     }
-    $contents.each |String $config| {
-      file_line { $config:
-        ensure => present,
-        line   => $config,
-        path   => "/etc/logstash/conf.d/${conf_file}",
-      }
-    }
-
   }
+  $logstash_config_output.each |$conf_file, $contents| {
+    file { "/etc/logstash/conf.d/${conf_file}-output.conf":
+      ensure  => present,
+      content => template('elkstack/logstash.output.conf.erb'),
+    }
+  }
+
+  #    $contents.each |String $config| {
+  #      file_line { $config:
+  #        ensure => present,
+  #        line   => $config,
+  #        path   => "/etc/logstash/conf.d/${conf_file}",
+  #      }
+  #    }
+  #
+  #  }
 }

@@ -8,5 +8,6 @@ class elkstack::params {
   $service_name = [ 'elasticsearch', 'kibana', 'nginx' ]
   $es_config = [ ]
   $kibana_config = [ ]
-  $logstash_config = {}
+  $logstash_config_output = {}
+  $logstash_config_input = {}
 }

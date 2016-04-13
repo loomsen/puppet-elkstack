@@ -46,7 +46,8 @@ class elkstack (
   $package_name = $::elkstack::params::package_name,
   $es_config = $::elkstack::params::es_config,
   $kibana_config = $::elkstack::params::kibana_config,
-  $logstash_config = $::elkstack::params::logstash_config,
+  $logstash_config_input = $::elkstack::params::logstash_config_input,
+  $logstash_config_output = $::elkstack::params::logstash_config_output,
 ) inherits ::elkstack::params {
   class {'::elkstack::install': } ->
   class {'::elkstack::config': } ~>
