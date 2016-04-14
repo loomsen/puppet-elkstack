@@ -3,16 +3,19 @@
 # This class is called from elkstack for service config.
 #
 class elkstack::config (
-  $es_config     = $::elkstack::es_config,
-  $kibana_config = $::elkstack::kibana_config,
+  $es_config              = $::elkstack::es_config,
+  $kibana_config          = $::elkstack::kibana_config,
   $logstash_config_output = $::elkstack::logstash_config_output,
-  $logstash_config_input = $::elkstack::logstash_config_input,
+  $logstash_config_input  = $::elkstack::logstash_config_input,
+  $with_nginx             = $::elkstack::with_nginx,
 ){
-  file {'kibana nginx config':
-    ensure  => file,
-    content => template('elkstack/kibana.nginx.conf.erb'),
-    path    => '/etc/nginx/conf.d/kibana.conf',
-    notify  => Service['nginx'],
+  if $with_nginx {
+    file {'kibana nginx config':
+      ensure  => file,
+      content => template('elkstack/kibana.nginx.conf.erb'),
+      path    => '/etc/nginx/conf.d/kibana.conf',
+      notify  => Service['nginx'],
+    }
   }
   file_line { 'elasticsearch url for kibana':
     ensure => present,

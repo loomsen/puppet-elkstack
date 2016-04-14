@@ -37,4 +37,9 @@ class elkstack::install(
     ensure  => present,
     require => [ Exec['import elasticsearch key'], File['elasticsearch repo'], File['kibana repo'] ],
   }
+  if $::elkstack::with_nginx {
+    package { 'nginx':
+      ensure => present,
+    }
+  }
 }

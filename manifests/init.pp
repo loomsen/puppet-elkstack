@@ -43,15 +43,16 @@
 # Copyright 2016 Your name here, unless otherwise noted.
 #
 class elkstack (
-  $es_main_version              = $::elkstack::params::es_main_version,
-  $kibana_main_version          = $::elkstack::params::kibana_main_version,
-  $logstash_main_version        = $::elkstack::params::logstash_main_version,
-  $package_name                 = $::elkstack::params::package_name,
-  $plugins                      = $::elkstack::params::plugins,
-  $es_config                    = $::elkstack::params::es_config,
-  $kibana_config                = $::elkstack::params::kibana_config,
-  $logstash_config_input        = $::elkstack::params::logstash_config_input,
-  $logstash_config_output       = $::elkstack::params::logstash_config_output,
+  $es_main_version        = $::elkstack::params::es_main_version,
+  $kibana_main_version    = $::elkstack::params::kibana_main_version,
+  $logstash_main_version  = $::elkstack::params::logstash_main_version,
+  $package_name           = $::elkstack::params::package_name,
+  $plugins                = $::elkstack::params::plugins,
+  $es_config              = $::elkstack::params::es_config,
+  $kibana_config          = $::elkstack::params::kibana_config,
+  $logstash_config_input  = $::elkstack::params::logstash_config_input,
+  $logstash_config_output = $::elkstack::params::logstash_config_output,
+  $with_nginx             = $::elkstack::params::with_nginx,
 ) inherits ::elkstack::params {
   class {'::elkstack::install': } ->
   class {'::elkstack::config': } ~>

@@ -5,10 +5,18 @@
 #
 class elkstack::service {
 
-  service { $::elkstack::service_name:
+  Service {
     ensure     => running,
     enable     => true,
     hasstatus  => true,
     hasrestart => true,
   }
+  service { $::elkstack::service_name:
+  }
+  if $::elkstack::with_nginx {
+    service { 'nginx':
+    }
+  }
+
+
 }
