@@ -209,7 +209,6 @@ output {
     index => "myindex"
   }
 }
-
 ```
 
 
@@ -228,7 +227,8 @@ Default is:
 ```
 
 Resulting file:
-`99-elasticsearch-output.conf`
+`/etc/logstash/conf.d/99-elasticsearch-output.conf`
+
 ```
 output {
   elasticsearch {
@@ -238,6 +238,7 @@ output {
   }
 }
 ```
+
 
 #### `$logstash_main_version`
 logstash main version to install. Also the version used for creating the CentOS repo.
@@ -280,6 +281,7 @@ elkstack::plugins:
   drivers:
     - 'https://jdbc.postgresql.org/download/postgresql-9.4.1208.jar'
 ```
+
 
 #### `$service_name`
 Default services to manage.
