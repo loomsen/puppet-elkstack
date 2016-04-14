@@ -10,7 +10,7 @@ class elkstack::config (
 ){
   file {'kibana nginx config':
     ensure  => file,
-    content => file('elkstack/kibana.nginx.conf'),
+    content => template('elkstack/kibana.nginx.conf.erb'),
     path    => '/etc/nginx/conf.d/kibana.conf',
     notify  => Service['nginx'],
   }
@@ -49,14 +49,4 @@ class elkstack::config (
       content => template('elkstack/logstash.output.conf.erb'),
     }
   }
-
-  #    $contents.each |String $config| {
-  #      file_line { $config:
-  #        ensure => present,
-  #        line   => $config,
-  #        path   => "/etc/logstash/conf.d/${conf_file}",
-  #      }
-  #    }
-  #
-  #  }
 }
