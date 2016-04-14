@@ -20,34 +20,67 @@
 
 ## Overview
 
-The elkstack module installs, configures and manages elkstack on 
+The elkstack module installs, configures and manages elkstack on CentOS systems.
 
 ## Module Description
-The elkstack module installs, configures and manages elkstack 
+The elkstack module installs, configures and manages elkstack (elasticsearch, kibana, logstash)
 For how to configure this, [please see below](#more-options)
 
 ### Notes
+This module is best used with an ENC like hiera. It will make your config much easier to read and to maintain. Check the examples to see what I mean.
 
 ## Setup
 
 ### What elkstack affects
 
-* This module will install the elkstack package on your system
-* This module will manage the elkstack config on your system
-* This module will manage the service on your system
+* This module will install the elkstack (elasticsearch, kibana, logstash) on your system
+* This module will manage basic configs of each component on your system
+* This module will manage the services on your system
 
 ### Setup Requirements
 
 ### Getting Started
+You can simply include the class in your config, it should suffice. The defaults should be fine
+in hiera:
+
+```yaml
+classes:
+  - elkstack
+```
 
 ## Configuration
 Here are some more elaborate examples of what you can do with this module.
 
 ### Examples
+This installs the elkstack, install the plugins for the stack, and downloads a PSQL JDBC connector to /usr/share/elasticsearch/lib. 
+It adds a line to kibanas config reading: `server.host: localhost`
+
+```yaml
+classes:
+  - elkstack
+
+elkstack::plugins:
+  elasticsearch:
+    - 'license'
+    - 'marvel-agent'
+  logstash:
+    - 'logstash-input-jdbc'
+  kibana:
+    - 'elasticsearch/marvel/latest'
+    - 'elastic/sense'
+  drivers:
+    - 'https://jdbc.postgresql.org/download/postgresql-9.4.1208.jar'
+
+elkstack::with_nginx: false
+
+elkstack::kibana_config:
+  - "server.host: localhost"
+
+```
+
 
 ### More options
-
-#### Specials
+The defaults are pretty reasonable, I hope. However, you may override pretty much anything. Available parameters are discussed below. 
 
 ## Reference
 
@@ -59,8 +92,9 @@ Here are some more elaborate examples of what you can do with this module.
 #### Private Classes
 
 * elkstack::install: Handles the packages.
-* elkstack::config: Handles configuration and cron files.
+* elkstack::config: Handles configuration files.
 * elkstack::params: default values.
+* elkstack::plugins: Handles the plugins.
 
 ### Functions
 
@@ -69,45 +103,198 @@ Here are some more elaborate examples of what you can do with this module.
 The following parameters are available in the `::elkstack` class:
 
 
-#### `$package_name`
-
-Default is:  [ 'elasticsearch', 'logstash', 'kibana', 'nginx', 'java' ]
-
-
-#### `$service_name`
-
-Default is:  [ 'elasticsearch', 'kibana', 'nginx' ]
-
-
 #### `$es_config`
+Elasticsearch configuration. This goes into /etc/elasticsearch/elasticsearch.yml line by line.
 
-Default is:  [ ]
+Default is:  []
+
+hiera example:
+
+```yaml
+elkstack::es_config:
+  - 'cluster.name: my-cluster'
+  - 'node.name: node1'
+```
+
+
+#### `$es_main_version`
+Version for the CentOS repo. You probably want to leave this untouched.
+
+Default is:  '2.x'
 
 
 #### `$kibana_config`
+Kibana configuration. This goes into /opt/kibana/config/kibana.yml line by line.
 
-Default is:  [ ]
+Default is:  
+
+```puppet
+  $kibana_config          = [
+    'elasticsearch.url: "http://localhost:9200"',
+    'server.host: localhost',
+  ]
+```
+
+hiera example:
+
+```yaml
+elkstack::kibana_config:
+  - 'elasticsearch.url: "http://example.com:9200"'
+  - 'server.host: example.com'
+```
 
 
-#### `$logstash_config_output`
+#### `$kibana_main_version`
+Kibana main version to install. Also the version used for creating the CentOS repo.
 
-Default is:  {}
+Default is:  '4.5'
 
 
 #### `$logstash_config_input`
+Logstash input configuration. This goes into /etc/logstash/conf.d/$filename-input.conf line by line.
 
 Default is:
 
 ```puppet
-  $logstash_config_input = {
-    input  => {},
-    output => {},
+  $logstash_config_input  = {
+    '01-default' => {
+      input    => [],
+      filter   => [],
+      output   => [],
+    }
   }
 ```
 
+hiera example:
+
+```yaml
+elkstack::logstash_config_input:
+  04-psql:
+    input:
+      - 'jdbc_connection_string => "jdbc:postgresql://example.com:5432/mydb"'
+      - 'jdbc_user => "myuser"'
+      - 'jdbc_password => "mypassword"'
+      - 'jdbc_paging_enabled => "true"'
+      - 'jdbc_page_size => "50000"'
+      - 'jdbc_validate_connection => true'
+      - 'jdbc_driver_library => "/usr/share/elasticsearch/lib/postgresql-9.4.1208.jar"'
+      - 'jdbc_driver_class => "org.postgresql.Driver"'
+      - 'statement => "SELECT * FROM customer_list"'
+    filter:
+      - '# just an example'
+    output:
+      elasticsearch: 'myindex'
+
+```
+
+Resulting file:
+`/etc/logstash/conf.d/04-psql-input.conf`
+
+```
+input {
+  psql {
+    jdbc_connection_string => "jdbc:postgresql://example.com:5432/mydb"
+    jdbc_user => "myuser"
+    jdbc_password => "mypassword"
+    jdbc_paging_enabled => "true"
+    jdbc_page_size => "50000"
+    jdbc_validate_connection => true
+    jdbc_driver_library => "/usr/share/elasticsearch/lib/postgresql-9.4.1208.jar"
+    jdbc_driver_class => "org.postgresql.Driver"
+    statement => "SELECT * FROM customer_list"
+  }
+}
+output {
+  elasticsearch {
+    index => "myindex"
+  }
+}
+
+```
+
+
+#### `$logstash_config_output`
+
+Default is:
+
+```puppet
+  $logstash_config_output = {
+    '99-elasticsearch' => [
+      'hosts           => ["localhost:9200"]',
+      'sniffing        => true',
+      'manage_template => false',
+    ],
+  }
+```
+
+Resulting file:
+`99-elasticsearch-output.conf`
+```
+output {
+  elasticsearch {
+    hosts           => ["localhost:9200"]
+    sniffing        => true
+    manage_template => false
+  }
+}
+```
+
+#### `$logstash_main_version`
+logstash main version to install. Also the version used for creating the CentOS repo.
+
+Default is:  '2.2'
+
+
+#### `$package_name`
+Default packages to install.
+
+Default is:  [ 'elasticsearch', 'logstash', 'kibana', 'java' ]
+
+
+#### `$plugins`
+Optional plugins to install for each of the stack components. Also you can download additional files, like jdbc drivers here.
+
+Default is:
+
+```puppet
+  $plugins                = {
+    elasticsearch => ['license', 'marvel-agent'],
+    logstash      => ['logstash-input-jdbc'],
+    kibana        => ['elasticsearch/marvel/latest', 'elastic/sense'],
+    drivers       => [],
+  }
+```
+
+hiera example:
+
+```yaml
+elkstack::plugins:
+  elasticsearch:
+    - 'license'
+    - 'marvel-agent'
+  logstash:
+    - 'logstash-input-jdbc'
+  kibana:
+    - 'elasticsearch/marvel/latest'
+    - 'elastic/sense'
+  drivers:
+    - 'https://jdbc.postgresql.org/download/postgresql-9.4.1208.jar'
+```
+
+#### `$service_name`
+Default services to manage.
+
+Default is:  [ 'elasticsearch', 'kibana', 'logstash' ]
+
+
+#### `$with_nginx`
+If this is true, nginx will be installed, the service will be managed, and a simple kibana config will be placed in /etc/nginx/conf.d pointing to the systems FQDN.
+
+Default is:  true
+
 
 ## Limitations
-Currently, this module support CentOS, Fedora, Ubuntu and Debian.
+Currently, this module supports CentOS.
 
 ## Development
 I have limited access to resources and time, so if you think this module is useful, like it, hate it, want to make it better or
