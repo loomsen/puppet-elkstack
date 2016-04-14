@@ -309,5 +309,6 @@ want it off the face of the planet, feel free to get in touch with me.
 Norbert Varzariu (loomsen)
 
 ## Contributors
-Please see the [list of contributors.](https://github.com/loomsen/puppet-elkstack/graphs/contributors)
+Hendrik Horeis <hendrik.horeis@gmail.com>
+Additional contributors: please see the [list of contributors.](https://github.com/loomsen/puppet-elkstack/graphs/contributors)
 
