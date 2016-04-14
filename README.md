@@ -2,82 +2,120 @@
 
 #### Table of Contents
 
-1. [Description](#description)
-1. [Setup - The basics of getting started with elkstack](#setup)
+1. [Overview](#overview)
+2. [Module Description - What the module does and why it is useful](#module-description)
+    * [Notes](#notes)
+3. [Setup - The basics of getting started with elkstack](#setup)
     * [What elkstack affects](#what-elkstack-affects)
     * [Setup requirements](#setup-requirements)
-    * [Beginning with elkstack](#beginning-with-elkstack)
-1. [Usage - Configuration options and additional functionality](#usage)
-1. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-1. [Limitations - OS compatibility, etc.](#limitations)
-1. [Development - Guide for contributing to the module](#development)
+    * [Getting started with elkstack](#getting-started)
+4. [Configuration - options and additional functionality](#configuration)
+    * [Examples](#examples)
+    * [More Options](#more-options)
+5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+5. [Limitations - OS compatibility, etc.](#limitations)
+6. [Development - Guide for contributing to the module](#development)
+7. [Editors](#editors)
+8. [Contributors](#contributors)
 
-## Description
+## Overview
 
-Start with a one- or two-sentence summary of what the module does and/or what
-problem it solves. This is your 30-second elevator pitch for your module.
-Consider including OS/Puppet version it works with.
+The elkstack module installs, configures and manages elkstack on 
 
-You can give more descriptive information in a second paragraph. This paragraph
-should answer the questions: "What does this module *do*?" and "Why would I use
-it?" If your module has a range of functionality (installation, configuration,
-management, etc.), this is the time to mention it.
+## Module Description
+The elkstack module installs, configures and manages elkstack 
+For how to configure this, [please see below](#more-options)
+
+### Notes
 
 ## Setup
 
-### What elkstack affects **OPTIONAL**
+### What elkstack affects
 
-If it's obvious what your module touches, you can skip this section. For
-example, folks can probably figure out that your mysql_instance module affects
-their MySQL instances.
+* This module will install the elkstack package on your system
+* This module will manage the elkstack config on your system
+* This module will manage the service on your system
 
-If there's more that they should know about, though, this is the place to mention:
+### Setup Requirements
 
-* A list of files, packages, services, or operations that the module will alter,
-  impact, or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
+### Getting Started
 
-### Setup Requirements **OPTIONAL**
+## Configuration
+Here are some more elaborate examples of what you can do with this module.
 
-If your module requires anything extra before setting up (pluginsync enabled,
-etc.), mention it here.
+### Examples
 
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you might want to include an additional "Upgrading" section
-here.
+### More options
 
-### Beginning with elkstack
-
-The very basic steps needed for a user to get the module up and running. This
-can include setup steps, if necessary, or it can be an example of the most
-basic use of the module.
-
-## Usage
-
-This section is where you describe how to customize, configure, and do the
-fancy stuff with your module here. It's especially helpful if you include usage
-examples and code samples for doing things with your module.
+#### Specials
 
 ## Reference
 
-Here, include a complete list of your module's classes, types, providers,
-facts, along with the parameters for each. Users refer to this section (thus
-the name "Reference") to find specific details; most users don't read it per
-se.
+### Classes
+
+#### Public Classes
+* elkstack: Main class, includes all other classes.
+
+#### Private Classes
+
+* elkstack::install: Handles the packages.
+* elkstack::config: Handles configuration and cron files.
+* elkstack::params: default values.
+
+### Functions
+
+### Parameters
+
+The following parameters are available in the `::elkstack` class:
+
+
+#### `$package_name`
+
+Default is:  [ 'elasticsearch', 'logstash', 'kibana', 'nginx', 'java' ]
+
+
+#### `$service_name`
+
+Default is:  [ 'elasticsearch', 'kibana', 'nginx' ]
+
+
+#### `$es_config`
+
+Default is:  [ ]
+
+
+#### `$kibana_config`
+
+Default is:  [ ]
+
+
+#### `$logstash_config_output`
+
+Default is:  {}
+
+
+#### `$logstash_config_input`
+
+Default is:
+
+```puppet
+  $logstash_config_input = {
+    input  => {},
+    output => {},
+  }
+```
+
 
 ## Limitations
-
-This is where you list OS compatibility, version compatibility, etc. If there
-are Known Issues, you might want to include them under their own heading here.
+Currently, this module support CentOS, Fedora, Ubuntu and Debian.
 
 ## Development
+I have limited access to resources and time, so if you think this module is useful, like it, hate it, want to make it better or
+want it off the face of the planet, feel free to get in touch with me.
 
-Since your module is awesome, other users will want to play with it. Let them
-know what the ground rules for contributing are.
+## Editors
+Norbert Varzariu (loomsen)
 
-## Release Notes/Contributors/Etc. **Optional**
+## Contributors
+Please see the [list of contributors.](https://github.com/loomsen/puppet-elkstack/graphs/contributors)
 
-If you aren't using changelog, put your release notes here (though you should
-consider using changelog). You can also add any additional sections you feel
-are necessary or important to include here. Please use the `## ` header.
