@@ -204,6 +204,9 @@ input {
     statement => "SELECT * FROM customer_list"
   }
 }
+filter {
+  # just an example
+}
 output {
   elasticsearch {
     index => "myindex"
