@@ -2,14 +2,29 @@
   "name": "loomsen-elkstack",
   "version": "0.2.0",
   "author": "loomsen",
-  "summary": "install an elk stack",
+  "summary": "Installs an ELK stack",
   "license": "Apache-2.0",
-  "source": "",
-  "project_page": null,
-  "issues_url": null,
+  "source": "https://github.com/loomsen/puppet-elkstack",
+  "project_page": "https://github.com/loomsen/puppet-elkstack",
+  "issues_url": "https://github.com/loomsen/puppet-elkstack/issues",
+  "tags": [
+    "elk",
+    "elasticsearch",
+    "logstash",
+    "kibana"
+  ],
+  "requirements": [
+    { "name": "pe", "version_requirement": ">= 4.0.0" },
+    { "name": "puppet", "version_requirement": ">= 4.0.0" }
+  ],
   "dependencies": [
     {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
   ],
-  "data_provider": null
+  "operatingsystem_support": [
+    {
+    "operatingsystem":"CentOS",
+    "operatingsystemrelease":[ "7" ]
+    }
+  ]
 }
 
