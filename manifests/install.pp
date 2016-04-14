@@ -7,6 +7,8 @@ class elkstack::install {
   exec { 'import elasticsearch key':
     command => '/usr/bin/rpm --import http://packages.elastic.co/GPG-KEY-elasticsearch',
     creates => '/etc/pki/rpm-gpg/GPG-KEY-elasticsearch',
+    unless  => "rpm -q gpg-pubkey --qf '%{summary}\n' | grep -qi elasticsearch",
+    path    => '/usr/bin',
   } ->
 
   file { 'elasticsearch repo':
