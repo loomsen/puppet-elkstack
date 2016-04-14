@@ -9,6 +9,11 @@ class elkstack::params {
   $logstash_main_version = '2.2'
   $package_name = [ 'elasticsearch', 'logstash', 'kibana', 'nginx', 'java' ]
   $service_name = [ 'elasticsearch', 'kibana', 'nginx' ]
+  $plugins = {
+    elasticsearch => ['license', 'marvel-agent'],
+    logstash      => ['logstash-input-jdbc'],
+    kibana        => ['elasticsearch/marvel/latest', 'elastic/sense'],
+  }
   $es_config = [ ]
   $kibana_config = [ ]
   $logstash_config_output = {}

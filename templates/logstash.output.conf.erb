@@ -1,0 +1,8 @@
+output {
+<% cnf=@conf_file.gsub(/^\d+-/, '') -%>
+  <%=cnf -%> {
+<% @contents.each do |line| -%>
+    <%= line %>
+<% end -%>
+  }
+}
