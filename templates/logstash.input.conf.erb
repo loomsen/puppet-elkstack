@@ -1,7 +1,3 @@
-## Make sure the input names are according to this format in your config
-# No-<input>_to_$indexname
-# i.e.: 01-psql_to_cmcustomers
-
 input {
 <% cnf=@conf_file.gsub(/^\d+-/, '') -%>
   <%=cnf-%> {
@@ -10,9 +6,18 @@ input {
 <% end -%>
   }
 }
-
+<% if @contents['filter'] -%>
+filter {
+<%@contents['filter'].each do |line| -%>
+  <%=line%>
+<%end-%>
+}
+<%end-%>
+<% if @contents['output'] -%>
 output {
   <%=@contents['output'].keys[0]%> {
     index => "<%=@contents['output'][@contents['output'].keys[0]]%>"
   }
 }
+<%end-%>
+
