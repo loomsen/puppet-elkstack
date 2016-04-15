@@ -8,7 +8,7 @@ describe 'elkstack' do
     it { is_expected.to contain_class('elkstack::install').that_comes_before('elkstack::config') }
     it { is_expected.to contain_class('elkstack::config') }
     it { is_expected.to contain_class('elkstack::service').that_subscribes_to('elkstack::config') }
-    it { is_expected.to contain_class('elkstack::plugins').that_comes_after('elkstack::service') }
+    it { is_expected.to contain_class('elkstack::plugins') }
 
     it { is_expected.to contain_service('elasticsearch') }
     it { is_expected.to contain_package('elasticsearch').with_ensure('present') }
