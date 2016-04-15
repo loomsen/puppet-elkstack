@@ -13,11 +13,11 @@ describe 'elkstack class' do
       apply_manifest(pp, :catch_changes  => true)
     end
 
-    describe package('elkstack') do
+    describe package('elasticsearch') do
       it { is_expected.to be_installed }
     end
 
-    describe service('elkstack') do
+    describe service('elasticsearch') do
       it { is_expected.to be_enabled }
       it { is_expected.to be_running }
     end
