@@ -26,14 +26,21 @@ describe 'elkstack' do
 
     it do
       is_expected.to contain_file('/opt/kibana/optimize/.babelcache.json').with({
-        'ensure' => 'file',
         'owner'  => 'kibana', 
       })
     end
-    it { is_expected.to contain_file('/etc/logstash/conf.d/99-elasticsearch-output.conf').with_ensure('file') }
 
+    it { is_expected.to contain_file('/etc/logstash/conf.d/99-elasticsearch-output.conf').with_ensure('present') }
+
+    it { is_expected.to contain_exec('install elastic/sense into kibana') }
+    it { is_expected.to contain_exec('install elasticsearch/marvel/latest into kibana') }
+    it { is_expected.to contain_exec('install license') }
+    it { is_expected.to contain_exec('install logstash-input-jdbc') }
+    it { is_expected.to contain_exec('install marvel-agent') }
     it { is_expected.to contain_exec('import elasticsearch key') }
-    
+
+    it { is_expected.to contain_file_line('elasticsearch url for kibana') }
+
 
   end
 end
