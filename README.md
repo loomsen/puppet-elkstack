@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/loomsen/puppet-elkstack.svg?branch=master)](https://travis-ci.org/loomsen/puppet-elkstack)
+
 # elkstack
 
 #### Table of Contents
