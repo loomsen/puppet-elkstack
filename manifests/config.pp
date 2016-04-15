@@ -40,16 +40,20 @@ class elkstack::config (
       notify => Service['elasticsearch'],
     }
   }
-  $logstash_config_input.each |$conf_file, $contents| {
-    file { "/etc/logstash/conf.d/${conf_file}-input.conf":
-      ensure  => present,
-      content => template('elkstack/logstash.input.conf.erb'),
+  if ($logstash_config_input != '') {
+    $logstash_config_input.each |$conf_file, $contents| {
+      file { "/etc/logstash/conf.d/${conf_file}-input.conf":
+        ensure  => present,
+        content => template('elkstack/logstash.input.conf.erb'),
+      }
     }
   }
-  $logstash_config_output.each |$conf_file, $contents| {
-    file { "/etc/logstash/conf.d/${conf_file}-output.conf":
-      ensure  => present,
-      content => template('elkstack/logstash.output.conf.erb'),
+  if ($logstash_config_output != '') {
+    $logstash_config_output.each |$conf_file, $contents| {
+      file { "/etc/logstash/conf.d/${conf_file}-output.conf":
+        ensure  => present,
+        content => template('elkstack/logstash.output.conf.erb'),
+      }
     }
   }
 }

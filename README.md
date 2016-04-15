@@ -152,17 +152,32 @@ Default is:  '4.5'
 
 #### `$logstash_config_input`
 Logstash input configuration. This goes into /etc/logstash/conf.d/$filename-input.conf line by line.
+The hash is of the form: (Please see examples below)
+
+```puppet
+$logstash_config_input = {
+  01-filename => {
+    input => { 
+      "input_configuration=> line1"
+      "another_input_config=> line2"
+      }
+    filter => {
+      "filter {"
+        "filter line here"
+      "}"
+    }
+    output => {
+      "outputname => indexname"
+    }
+  }
+}
+```
+
 
 Default is:
 
 ```puppet
-  $logstash_config_input  = {
-    '01-default' => {
-      input    => [],
-      filter   => [],
-      output   => [],
-    }
-  }
+  $logstash_config_input  = {}
 ```
 
 hiera example:
