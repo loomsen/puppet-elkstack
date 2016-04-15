@@ -18,5 +18,13 @@ describe 'elkstack' do
     it { is_expected.to contain_package('logstash').with_ensure('present') }
     it { is_expected.to contain_service('nginx') }
     it { is_expected.to contain_package('nginx').with_ensure('present') }
+    it { is_expected.to contain_package('java').with_ensure('present') }
+    it { is_expected.to contain_file('logstash repo').with_ensure('present') }
+    it { is_expected.to contain_file('kibana repo').with_ensure('present') }
+    it { is_expected.to contain_file('elasticsearch repo').with_ensure('present') }
+
+
+
+
   end
 end
