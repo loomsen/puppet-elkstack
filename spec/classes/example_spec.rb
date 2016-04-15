@@ -40,6 +40,8 @@ describe 'elkstack' do
     it { is_expected.to contain_exec('import elasticsearch key') }
 
     it { is_expected.to contain_file_line('elasticsearch url for kibana') }
+    it { is_expected.to contain_file_line('elasticsearch.url: "http://localhost:9200"') }
+    it { is_expected.to contain_file_line('server.host: localhost') }
 
 
   end
