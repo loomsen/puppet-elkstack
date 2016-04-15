@@ -19,12 +19,21 @@ describe 'elkstack' do
     it { is_expected.to contain_service('nginx') }
     it { is_expected.to contain_package('nginx').with_ensure('present') }
     it { is_expected.to contain_package('java').with_ensure('present') }
-    it { is_expected.to contain_file('logstash repo').with_ensure('present') }
-    it { is_expected.to contain_file('kibana repo').with_ensure('present') }
-    it { is_expected.to contain_file('elasticsearch repo').with_ensure('present') }
+    it { is_expected.to contain_file('logstash repo').with_ensure('file') }
+    it { is_expected.to contain_file('kibana repo').with_ensure('file') }
+    it { is_expected.to contain_file('elasticsearch repo').with_ensure('file') }
+    it { is_expected.to contain_file('kibana nginx config').with_ensure('file') }
 
+    it do
+      is_expected.to contain_file('/opt/kibana/optimize/.babelcache.json').with({
+        'ensure' => 'file',
+        'owner'  => 'kibana', 
+      })
+    end
+    it { is_expected.to contain_file('/etc/logstash/conf.d/99-elasticsearch-output.conf').with_ensure('file') }
 
-
+    it { is_expected.to contain_exec('import elasticsearch key') }
+    
 
   end
 end
