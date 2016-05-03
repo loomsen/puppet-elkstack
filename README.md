@@ -152,6 +152,41 @@ Kibana main version to install. Also the version used for creating the CentOS re
 Default is:  '4.5'
 
 
+#### `$logstash_config_filter`
+Logstash filter configuration. This goes into /etc/logstash/conf.d/$filename-filter.conf line by line.
+
+Default is:
+
+```puppet
+  $logstash_config_filter = {}
+ ```
+
+hiera example:
+
+```yaml
+elkstack::logstash_config_filter:
+  10-mutate:
+    - add_field => {"[@metadata][index_name]" => "%{literal('%')}{index_name}"}
+    - add_field => {"[@metadata][index_type]" => "%{literal('%')}{index_type}"}
+    - remove_field => ["index_type"]
+    - remove_field => ["index_name"]
+```
+
+
+Resulting file:
+`/etc/logstash/conf.d/10-mutate-filter.conf`
+
+```
+filter {
+  mutate {
+  add_field => {"[@metadata][index_name]" => "%{index_name}"}
+  add_field => {"[@metadata][index_type]" => "%{index_type}"}
+  remove_field => ["index_type"]
+  remove_field => ["index_name"]
+  }
+}
+```
+
 #### `$logstash_config_input`
 Logstash input configuration. This goes into /etc/logstash/conf.d/$filename-input.conf line by line.
 The hash is of the form: (Please see examples below)
@@ -188,6 +223,7 @@ hiera example:
 elkstack::logstash_config_input:
   04-psql:
     input:
+      - 'jdbc {'
       - 'jdbc_connection_string => "jdbc:postgresql://example.com:5432/mydb"'
       - 'jdbc_user => "myuser"'
       - 'jdbc_password => "mypassword"'
@@ -197,10 +233,14 @@ elkstack::logstash_config_input:
       - 'jdbc_driver_library => "/usr/share/elasticsearch/lib/postgresql-9.4.1208.jar"'
       - 'jdbc_driver_class => "org.postgresql.Driver"'
       - 'statement => "SELECT * FROM customer_list"'
+      - '}'
     filter:
-      - '# just an example'
+      - 'mutate {'
+      - '}'
     output:
-      elasticsearch: 'myindex'
+      - 'elasticsearch {'
+      - 'index => "myindex"'
+      - '}'
 
 ```
 
@@ -209,30 +249,32 @@ Resulting file:
 
 ```
 input {
-  psql {
-    jdbc_connection_string => "jdbc:postgresql://example.com:5432/mydb"
-    jdbc_user => "myuser"
-    jdbc_password => "mypassword"
-    jdbc_paging_enabled => "true"
-    jdbc_page_size => "50000"
-    jdbc_validate_connection => true
-    jdbc_driver_library => "/usr/share/elasticsearch/lib/postgresql-9.4.1208.jar"
-    jdbc_driver_class => "org.postgresql.Driver"
-    statement => "SELECT * FROM customer_list"
+  jdbc {
+  jdbc_connection_string => "jdbc:postgresql://example.com:5432/mydb"
+  jdbc_user => "myuser"
+  jdbc_password => "mypassword"
+  jdbc_paging_enabled => "true"
+  jdbc_page_size => "50000"
+  jdbc_validate_connection => true
+  jdbc_driver_library => "/usr/share/elasticsearch/lib/postgresql-9.4.1208.jar"
+  jdbc_driver_class => "org.postgresql.Driver"
+  statement => "SELECT * FROM customer_list"
   }
 }
 filter {
-  # just an example
+  mutate {
+  }
 }
 output {
   elasticsearch {
-    index => "myindex"
+  index => "myindex"
   }
 }
 ```
 
 
 #### `$logstash_config_output`
+Logstash output configuration. This goes into /etc/logstash/conf.d/$filename-output.conf line by line.
 
 Default is:
 
@@ -249,12 +291,22 @@ Default is:
 Resulting file:
 `/etc/logstash/conf.d/99-elasticsearch-output.conf`
 
+hiera example:
+
+```yaml
+elkstack::logstash_config_output:
+  99-elasticsearch:
+    - 'hosts => ["localhost:9200"]'
+    - 'sniffing => true'
+    - 'manage_template => false'
+```
+
 ```
 output {
   elasticsearch {
-    hosts           => ["localhost:9200"]
-    sniffing        => true
-    manage_template => false
+  hosts           => ["localhost:9200"]
+  sniffing        => true
+  manage_template => false
   }
 }
 ```

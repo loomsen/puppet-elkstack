@@ -7,6 +7,7 @@ class elkstack::config (
   $kibana_config          = $::elkstack::kibana_config,
   $logstash_config_output = $::elkstack::logstash_config_output,
   $logstash_config_input  = $::elkstack::logstash_config_input,
+  $logstash_config_filter = $::elkstack::logstash_config_filter,
   $with_nginx             = $::elkstack::with_nginx,
 ){
   if $with_nginx {
@@ -53,6 +54,14 @@ class elkstack::config (
       file { "/etc/logstash/conf.d/${conf_file}-output.conf":
         ensure  => present,
         content => template('elkstack/logstash.output.conf.erb'),
+      }
+    }
+  }
+  if ($logstash_config_filter != '') {
+    $logstash_config_filter.each |$conf_file, $contents| {
+      file { "/etc/logstash/conf.d/${conf_file}-filter.conf":
+        ensure  => present,
+        content => template('elkstack/logstash.filter.conf.erb'),
       }
     }
   }

@@ -12,6 +12,7 @@ class elkstack::params {
   ]
   $kibana_main_version    = '4.5'
   $logstash_config_input  = {}
+  $logstash_config_filter = {}
   $logstash_config_output = {
     '99-elasticsearch' => [
       'hosts           => ["localhost:9200"]',

@@ -50,6 +50,7 @@ class elkstack (
   $plugins                = $::elkstack::params::plugins,
   $es_config              = $::elkstack::params::es_config,
   $kibana_config          = $::elkstack::params::kibana_config,
+  $logstash_config_filter = $::elkstack::params::logstash_config_filter,
   $logstash_config_input  = $::elkstack::params::logstash_config_input,
   $logstash_config_output = $::elkstack::params::logstash_config_output,
   $with_nginx             = $::elkstack::params::with_nginx,

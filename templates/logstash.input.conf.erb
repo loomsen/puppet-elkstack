@@ -1,23 +1,20 @@
 input {
-<% cnf=@conf_file.gsub(/^\d+-/, '') -%>
-  <%=cnf-%> {
 <% @contents['input'].each do |line| -%>
     <%= line %>
 <% end -%>
-  }
 }
 <% if @contents['filter'] -%>
 filter {
 <%@contents['filter'].each do |line| -%>
-  <%=line%>
+    <%=line%>
 <%end-%>
 }
 <%end-%>
 <% if @contents['output'] -%>
 output {
-  <%=@contents['output'].keys[0]%> {
-    index => "<%=@contents['output'][@contents['output'].keys[0]]%>"
-  }
+<%@contents['output'].each do |line| -%>
+    <%=line%>
+<%end-%>
 }
 <%end-%>
 
