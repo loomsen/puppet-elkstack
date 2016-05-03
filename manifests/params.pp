@@ -15,9 +15,11 @@ class elkstack::params {
   $logstash_config_filter = {}
   $logstash_config_output = {
     '99-elasticsearch' => [
+      'elasticsearch {',
       'hosts           => ["localhost:9200"]',
       'sniffing        => true',
       'manage_template => false',
+      '}',
     ],
   }
   $logstash_main_version  = '2.2'

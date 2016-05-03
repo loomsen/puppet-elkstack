@@ -166,10 +166,12 @@ hiera example:
 ```yaml
 elkstack::logstash_config_filter:
   10-mutate:
+    - 'mutate {'
     - add_field => {"[@metadata][index_name]" => "%{literal('%')}{index_name}"}
     - add_field => {"[@metadata][index_type]" => "%{literal('%')}{index_type}"}
     - remove_field => ["index_type"]
     - remove_field => ["index_name"]
+    - '}'
 ```
 
 
@@ -281,9 +283,11 @@ Default is:
 ```puppet
   $logstash_config_output = {
     '99-elasticsearch' => [
+      'elasticsearch {',
       'hosts           => ["localhost:9200"]',
       'sniffing        => true',
       'manage_template => false',
+      '}',
     ],
   }
 ```
@@ -295,10 +299,12 @@ hiera example:
 
 ```yaml
 elkstack::logstash_config_output:
-  99-elasticsearch:
+  99-myoutput:
+    - 'elasticsearch {'
     - 'hosts => ["localhost:9200"]'
     - 'sniffing => true'
     - 'manage_template => false'
+    - '}'
 ```
 
 ```
